@@ -1,0 +1,10 @@
+{
+    "name": "troiswa/bookandwriters-php",
+    "authors": [
+        {
+            "name": "the1alt",
+            "email": "thibaut.faurel@gmail.com"
+        }
+    ],
+    "require": {}
+}

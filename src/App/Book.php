@@ -1,6 +1,10 @@
 <?php
 
-class Book{
+class Book extends AbstractLike implements NotationInterface
+{
+
+    use StarTrait;
+    use HTMLTrait;
 
     static $counter = 0;
     static $prices = 0;
@@ -443,15 +447,52 @@ class Book{
 
 
      /**
-      * méthode permettant de retourner le prix moyen des livres
+      * méthode permettant de retourner le prix moyen d'un tableau de livres
       */
 
-     public static function avgPrice()
+     public static function avgPrice(array $array)
      {
-        $avg = self::$prices / self::$counter;
-        return $avg;
+        $avg = 0;
+
+        foreach ($array as $key => $value) {
+          if($value instanceof Book === false)
+          {
+            throw new Exception("Le paramètre doit être un tableau de livres");
+          }
+          $avg += $value->getPrix();
+        }
+        $avg = $avg / count($array);
+        return $avg."\n";
      }
 
+/**------------------------ From Abstract -------------------------*/
+
+public function addLike()
+{
+  $this->like = true;
+  return $this;
+}
+public function removeLike()
+{
+    $this->like = false;
+    return $this;
+}
+
+
+
+
+/**-------------------------FROM INTERFACE-----------------------*/
+     public function addNote($value)
+     {
+       $this->notes[]=$value;
+       return $this;
+     }
+
+     public function addNoteAutre(Ecrivain $cible, $note)
+     {
+       echo "cette fonction n'est pas accessible aux livres";
+       return false;
+     }
 
 }
 

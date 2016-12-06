@@ -2,7 +2,7 @@
 
 class MetaData{
 
-  const REGSIRET = '/^((\d){3}(\ )){3}(\d){4}$/';
+  const REGSIRET = '/^((\d){3}(\ )){3}(\d){5}$/';
   const REGCP = '/^(\d){5}$/';
 
 
@@ -186,7 +186,7 @@ class MetaData{
   public function verifSiret()
   {
     if(!preg_match(self::REGSIRET, $this->siret)){
-      throw new Exception("Erreur sur le numéro de siret");
+      throw new SiretException("Erreur sur le numéro de siret");
     }
   }
 
@@ -199,7 +199,7 @@ class MetaData{
   public function depFromCP()
   {
     if (!preg_match(self::REGCP, $this->codePostal)) {
-      throw new Exception("Erreur sur le Code Postal");
+      throw new CPException("Erreur sur le Code Postal");
     }
     $dep = substr($this->codePostal, 0 ,1);
     return $dep;

@@ -1,13 +1,14 @@
 <?php
 
-class Edition
+class Edition extends MetaData implements DateFrInterface, NotationInterface
 {
+  use StarTrait;
 
   protected $id;
   protected $nom;
   protected $activite;
   protected $dateCreation;
-  protected $note;
+  protected $note = [];
 
   /**------------------              CONSTRUCT             ------------------------------*/
 
@@ -17,12 +18,13 @@ class Edition
  * @param mixed $dateCreation
  * @param mixed $note
  */
-public function __construct($nom, $activite, $dateCreation, $note)
+public function __construct($nom, $activite, $dateCreation, $note, $adresse, $codePostal, $pays, $date, $siret, array $gps)
 {
+  parent::__construct($adresse, $codePostal, $pays, $date, $siret, $gps);
   $this->nom = $nom;
   $this->activite = $activite;
   $this->dateCreation = $dateCreation;
-  $this->note = $note;
+  $this->note []= $note;
 }
 
 
@@ -126,6 +128,67 @@ public function __construct($nom, $activite, $dateCreation, $note)
 
 
   /**------------------              METHODES             ------------------------------*/
+
+
+  public function verifSiret()
+  {
+    if(!preg_match("/^(\d){1}(\ )(\d){5}(\ )(\d){8}$/", $this->siret)){
+      throw new SiretException("Erreur sur le numéro de siret");
+    }
+  }
+
+  /**----------------------------  From Implement --------------------------------*/
+
+  /**
+  * METHDOE permettant de formater la date de naissance.
+  * @return this
+  */
+  public function formatDateFr()
+  {
+    $date = DateTime::createFromFormat('Y-m-d H:i', $this->date);
+    return $date->format('d/m/Y');
+  }
+  /**
+  * METHDOE permettant de formater l'heure de naissance.
+  * @return this
+  */
+  public function formatTimeFr()
+  {
+    $date = DateTime::createFromFormat('Y-m-d H:i', $this->date);
+    return $date->format('H:i');
+  }
+
+
+
+  /**--------------------- From implements ----------------------*/
+
+
+  public function addNote($value)
+  {
+    $this->note[]=$value;
+    return $this;
+  }
+
+  public function addNoteAutre(Ecrivain $cible, $note)
+  {
+    $add = 0;
+    $count = 0;
+    foreach ($cible->collection as $key => $value)
+    {
+        $value->addNote($note);
+        $count += count($value->getNotes());
+        foreach ($value->getNotes() as $cle => $valeur)
+        {
+          $add += $valeur;
+        }
+    }
+    return $add/$count;
+  }
+
+
+
+
+
 
 
 
